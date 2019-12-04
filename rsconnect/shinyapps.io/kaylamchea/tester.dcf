@@ -5,9 +5,8 @@ account: kaylamchea
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 1502022
-bundleId: 2606354
+bundleId: 2641835
 url: https://kaylamchea.shinyapps.io/tester/
-when: 1574320479.14224
+when: 1575496211.79538
 asMultiple: FALSE
 asStatic: FALSE
-ignoredFiles: README.md|images/visualization-1.PNG|images/visualization-2.png
