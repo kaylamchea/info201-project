@@ -8,7 +8,7 @@ library("shiny")
 
 # Load the data
 education_data <- read.csv("data/barro_lee_dataset.csv",
-                           stringsAsFactors = FALSE
+  stringsAsFactors = FALSE
 )
 
 # Create a background page containing information about our problem and our
@@ -16,12 +16,14 @@ education_data <- read.csv("data/barro_lee_dataset.csv",
 page_one <- tabPanel(
   "Background",
   titlePanel("Background"),
-  p("Today, education remains inaccessible for millions of children and
+  p(
+    "Today, education remains inaccessible for millions of children and
     adolescents around the world. According to",
     a("UNICEF,", href = "https://www.unicef.org/education"),
     '"roughly one in five school-aged children are not in school at all."',
     "This is due to various reasons such as poverty, gender, location,
-    ethnicity, etc."),
+    ethnicity, etc."
+  ),
   p("We hope to bring more awareness to the high levels of education inequality
     occurring across countries, particularly developed countries vs. developing
     countries, with our visualizations."),
@@ -65,7 +67,7 @@ page_three <- tabPanel(
   sidebarLayout(
     sidebarPanel(
       checkboxGroupInput(
-        inputId = "region_checkbox", 
+        inputId = "region_checkbox",
         label = ("Select Region(s)"),
         choices = unique(education_data$region_code),
         selected = "Middle East and North Africa"
@@ -88,22 +90,22 @@ page_five <- tabPanel(
   "Conclusion",
   titlePanel("Conclusion"),
   p("Our first visualization shows that even among regions in 2010, the average
-    years of primary schooling attained differed greatly. For instance, in 
+    years of primary schooling attained differed greatly. For instance, in
     Sub-Saharan Africa, Mali's average was 1.3 years while Botswana's was 2.6
     years."),
-  p("Our second visualization shows that although the percentage of no 
+  p("Our second visualization shows that although the percentage of no
     schooling has decreased over time for all regions, there is a large gap
-    in levels across the regions. For instance, the percentage of no schooling
-    was about 3% in Advanced Economies and about 1% in Europe and Central
-    Asia while the percentage was about 34% in Sub-Saharan Africa and 32% in
-    South Asia."),
+    in levels across the regions. For instance, the percentage of no
+    schooling was about 3% in Advanced Economies and about 1% in Europe and
+    Central Asia while the percentage was about 34% in Sub-Saharan Africa
+    and 32% in South Asia."),
   p("Our third visualization shows the vast difference in average years of
     schooling across the world. North America, Europe, and Australia tended
     to have the most average years of schooling while South America, Africa,
     and South/Southeast Asia tended to have the least"),
   p("These various visualizations show that, although education inequality has
-    improved, in 2010 there were still a lot of youth in the world not receiving 
-    a proper education.")
+    improved, in 2010 there were still a lot of youth in the world not
+    receiving a proper education.")
 )
 
 # Create a page describing the technology we used
@@ -111,8 +113,9 @@ page_six <- tabPanel(
   "About the Tech",
   titlePanel("About the Tech"),
   br(),
-  p("For this project, we used dplyr to organize our data and ggmap, ggplot2, 
-    gridExtra, and plotly to create our visualizations. We did not use any APIs."),
+  p("For this project, we used dplyr to organize our data and ggmap, ggplot2,
+    gridExtra, and plotly to create our visualizations. We did not use any
+    APIs."),
   p(
     "For more information read our",
     a("technical report.",
@@ -152,7 +155,7 @@ ui <- fluidPage(
 )
 
 server <- function(input, output, session) {
-  # Define a horizontal bar graph of average years of primary school 
+  # Define a horizontal bar graph of average years of primary school
   # to render in the UI
   output$completion_plot <- renderPlotly({
     # Create a data frame of the passed in region's average years of
@@ -161,7 +164,7 @@ server <- function(input, output, session) {
       education_data %>%
         filter(year == 2010) %>%
         select(year, country, yr_sch_pri, region_code) %>%
-        na.omit() %>% 
+        na.omit() %>%
         group_by(country) %>%
         summarise(
           yr_sch_pri = sum(yr_sch_pri),
@@ -169,13 +172,16 @@ server <- function(input, output, session) {
         ) %>%
         filter(region_code == selected_region)
     }
-    
+
     # Create a bar graph of the data frame
     bar_graph <- ggplot(
       get_specific_yr_sch_pri(input$region),
-      aes(x = reorder(country, -yr_sch_pri),
-          y = yr_sch_pri,
-          text = yr_sch_pri)) +
+      aes(
+        x = reorder(country, -yr_sch_pri),
+        y = yr_sch_pri,
+        text = yr_sch_pri
+      )
+    ) +
       geom_col() +
       coord_flip() +
       labs(
@@ -185,11 +191,11 @@ server <- function(input, output, session) {
         ),
         x = "Country", y = "% of Primary School Completion"
       )
-    
+
     # Make the bar graph interactive and return it
     ggplotly(bar_graph, tooltip = "text")
   })
-  
+
   # Create a line graph for the percentage of no schooling attained by year to
   # render in the UI
   output$no_schooling_plot <- renderPlot({
@@ -199,7 +205,7 @@ server <- function(input, output, session) {
         filter(region_code == region_of_interest) %>%
         group_by(year) %>%
         summarize(lu = mean(lu))
-      
+
       line_graph <- ggplot(
         data = avg_lu,
         mapping = aes(x = year, y = lu)
@@ -216,7 +222,7 @@ server <- function(input, output, session) {
           x = "Year", y = "% of No Schooling"
         )
     }
-    
+
     if (length(input$region_checkbox) == 0) {
       ggplot(data.frame())
     } else {
@@ -224,7 +230,7 @@ server <- function(input, output, session) {
       grid.arrange(grobs = gl, nrow = 1)
     }
   })
-  
+
   # Create a world choropleth map of average years of schooling attained in 2010
   # to render in the UI
   output$world_map <- renderPlotly({
@@ -233,7 +239,7 @@ server <- function(input, output, session) {
     locations <- education_data %>%
       filter(year == "2010") %>%
       select(country, yr_sch)
-    
+
     # Plot the countries' average years of schooling on a world map
     map <- plot_geo(
       type = "choropleth",
