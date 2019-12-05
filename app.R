@@ -42,8 +42,8 @@ page_one <- tabPanel(
 # Create a page containing a horizontal bar graph of average years of primary
 # school attained by country for a region
 page_two <- tabPanel(
-  "Primary School Completion",
-  titlePanel("Primary School Completion"),
+  "Average Years of Primary School",
+  titlePanel("Average Years of Primary School"),
   br(),
   sidebarLayout(
     sidebarPanel(
@@ -189,7 +189,7 @@ server <- function(input, output, session) {
           "Average Years of Primary School in ",
           input$region, ", 2010"
         ),
-        x = "Country", y = "% of Primary School Completion"
+        x = "Country", y = "Average Years of Primary Schooling Attained"
       )
 
     # Make the bar graph interactive and return it
